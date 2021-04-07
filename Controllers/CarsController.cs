@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using gregslist_api.Models;
-using gregslist_api.db;
+using gregslist_api.Services;
 
 namespace gregslist_api.Controllers
 {
@@ -9,12 +9,32 @@ namespace gregslist_api.Controllers
    [Route("api/[controller]")]
    public class CarsController : ControllerBase
    {
+      private readonly CarsService _service;
+
+      public CarsController(CarsService service)
+      {
+         _service = service;
+      }
+
       [HttpGet]
       public ActionResult<IEnumerable<CarListing>> Get()
       {
          try
          {
-            return Ok(FakeDB.Cars);
+            return Ok(_service.Get());
+         }
+         catch (System.Exception err)
+         {
+            return BadRequest(err.Message);
+         }
+      }
+
+      [HttpGet("{id}")]
+      public ActionResult<IEnumerable<CarListing>> Get(int id)
+      {
+         try
+         {
+            return Ok(_service.Get(id));
          }
          catch (System.Exception err)
          {
@@ -28,32 +48,7 @@ namespace gregslist_api.Controllers
       {
          try
          {
-            FakeDB.Cars.Add(newCar);
-            return Ok(newCar);
-         }
-         catch (System.Exception err)
-         {
-            return BadRequest(err.Message);
-         }
-      }
-
-      [HttpGet("{carId}")]
-      public ActionResult<CarListing> GetCar(int carId)
-      {
-         try
-         {
-            CarListing carFound = FakeDB.Cars.Find(c => c.Id == carId);
-            if (carFound == null)
-            {
-               throw new System.Exception("Car does not exist");
-            }
-            return Ok(carFound);
-            //NOTE can use exists to see if a list contains something, but it returns a bool so be cautious when returning.
-            // bool carFound = FakeDB.Cars.Exists(c => c.Id == carId);
-            // if (carFound == false)
-            // {
-            //   throw new System.Exception("Car does not exist");
-            // }
+            return Ok(_service.Create(newCar));
          }
          catch (System.Exception err)
          {
@@ -66,15 +61,7 @@ namespace gregslist_api.Controllers
       {
          try
          {
-            CarListing carToRemove = FakeDB.Cars.Find(c => c.Id == id);
-            if (FakeDB.Cars.Remove(carToRemove))
-            {
-               return Ok("Car Delorted");
-            }
-            else
-            {
-               throw new System.Exception("This car does not exist.");
-            }
+            return Ok(_service.Delete(id));
          }
          catch (System.Exception err)
          {

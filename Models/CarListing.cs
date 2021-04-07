@@ -4,6 +4,10 @@ namespace gregslist_api.Models
 {
    public class CarListing
    {
+      public CarListing()
+      {
+      }
+
       public CarListing(string make, string model, int year, string color, int mileage, int price)
       {
          Make = make;

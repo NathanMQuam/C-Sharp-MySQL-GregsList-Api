@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using gregslist_api.Repositories;
@@ -13,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MySqlConnector;
+
 
 namespace gregslist_api
 {
@@ -28,6 +31,7 @@ namespace gregslist_api
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
+         services.AddScoped<IDbConnection>(x => CreateDbConnection());
 
          services.AddControllers();
          services.AddSwaggerGen(c =>
@@ -40,6 +44,12 @@ namespace gregslist_api
          // TODO: Instantiate transient services and repositories
          services.AddTransient<CarsService>();
          services.AddTransient<CarsRepository>();
+      }
+
+      private IDbConnection CreateDbConnection()
+      {
+         string connectString = Configuration["db:gearhost"];
+         return new MySqlConnection(connectString);
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
