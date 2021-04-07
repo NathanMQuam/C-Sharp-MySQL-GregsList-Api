@@ -23,7 +23,7 @@ namespace gregslist_api.Repositories
 
       internal CarListing Get(int Id)
       {
-         string sql = "SELECT * FROM burgers WHERE id = @Id;";
+         string sql = "SELECT * FROM cars WHERE id = @Id;";
          return _db.QueryFirstOrDefault<CarListing>(sql, new { Id });
       }
 

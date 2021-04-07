@@ -56,6 +56,20 @@ namespace gregslist_api.Controllers
          }
       }
 
+      [HttpPut("{id}")]
+      public ActionResult<CarListing> Edit([FromBody] CarListing editedCar, int id)
+      {
+         try
+         {
+            editedCar.Id = id;
+            return Ok(_service.Edit(editedCar));
+         }
+         catch (System.Exception err)
+         {
+            return BadRequest(err.Message);
+         }
+      }
+
       [HttpDelete("{id}")]
       public ActionResult<int> DeleteCar(int id)
       {
