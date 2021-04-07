@@ -21,11 +21,11 @@ namespace gregslist_api.Models
       [MinLength(3)]
       public string Model { get; set; }
       public string Color { get; set; }
+      public int? Year { get; set; }
       [Required]
-      public int Year { get; set; }
       public int Mileage { get; set; }
       [Required]
       public int Price { get; set; }
-      public string Id { get; private set; } = Guid.NewGuid().ToString();
+      public int Id { get; set; }
    }
 }

@@ -38,7 +38,7 @@ namespace gregslist_api.Controllers
       }
 
       [HttpGet("{carId}")]
-      public ActionResult<CarListing> GetCar(string carId)
+      public ActionResult<CarListing> GetCar(int carId)
       {
          try
          {
@@ -62,7 +62,7 @@ namespace gregslist_api.Controllers
       }
 
       [HttpDelete("{id}")]
-      public ActionResult<string> DeleteCar(string id)
+      public ActionResult<int> DeleteCar(int id)
       {
          try
          {
