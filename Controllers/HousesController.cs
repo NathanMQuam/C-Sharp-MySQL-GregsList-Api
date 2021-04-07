@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using gregslist_api.Models;
-using gregslist_api.db;
+using gregslist_api.Services;
 
 namespace gregslist_api.Controllers
 {
@@ -9,12 +9,32 @@ namespace gregslist_api.Controllers
    [Route("api/[controller]")]
    public class HousesController : ControllerBase
    {
+      private readonly HousesService _service;
+
+      public HousesController(HousesService service)
+      {
+         _service = service;
+      }
+
       [HttpGet]
       public ActionResult<IEnumerable<HouseListing>> Get()
       {
          try
          {
-            return Ok(FakeDB.Houses);
+            return Ok(_service.Get());
+         }
+         catch (System.Exception err)
+         {
+            return BadRequest(err.Message);
+         }
+      }
+
+      [HttpGet("{id}")]
+      public ActionResult<IEnumerable<HouseListing>> Get(int id)
+      {
+         try
+         {
+            return Ok(_service.Get(id));
          }
          catch (System.Exception err)
          {
@@ -28,8 +48,7 @@ namespace gregslist_api.Controllers
       {
          try
          {
-            FakeDB.Houses.Add(newHouse);
-            return Ok(newHouse);
+            return Ok(_service.Create(newHouse));
          }
          catch (System.Exception err)
          {
@@ -37,23 +56,13 @@ namespace gregslist_api.Controllers
          }
       }
 
-      [HttpGet("{houseId}")]
-      public ActionResult<HouseListing> GetHouse(string houseId)
+      [HttpPut("{id}")]
+      public ActionResult<HouseListing> Edit([FromBody] HouseListing editedHouse, int id)
       {
          try
          {
-            HouseListing houseFound = FakeDB.Houses.Find(c => c.Id == houseId);
-            if (houseFound == null)
-            {
-               throw new System.Exception("House does not exist");
-            }
-            return Ok(houseFound);
-            //NOTE can use exists to see if a list contains something, but it returns a bool so be cautious when returning.
-            // bool houseFound = FakeDB.Houses.Exists(c => c.Id == houseId);
-            // if (houseFound == false)
-            // {
-            //   throw new System.Exception("House does not exist");
-            // }
+            editedHouse.Id = id;
+            return Ok(_service.Edit(editedHouse));
          }
          catch (System.Exception err)
          {
@@ -62,19 +71,11 @@ namespace gregslist_api.Controllers
       }
 
       [HttpDelete("{id}")]
-      public ActionResult<string> DeleteHouse(string id)
+      public ActionResult<int> DeleteHouse(int id)
       {
          try
          {
-            HouseListing houseToRemove = FakeDB.Houses.Find(c => c.Id == id);
-            if (FakeDB.Houses.Remove(houseToRemove))
-            {
-               return Ok("House Delorted");
-            }
-            else
-            {
-               throw new System.Exception("This house does not exist.");
-            }
+            return Ok(_service.Delete(id));
          }
          catch (System.Exception err)
          {

@@ -22,7 +22,65 @@
 -- ("Honda", "Civic", "Gray", 5000.00, 106500, 2005);
 
 -- NOTE: Select all cars
-SELECT * FROM cars;
+-- SELECT * FROM cars;
+
+
+
+-- NOTE: Houses
+-- CREATE TABLE houses
+-- (
+--    id INT AUTO_INCREMENT,
+--    bedrooms INT NOT NULL,
+--    bathrooms INT NOT NULL,
+--    price DECIMAL(8, 2) NOT NULL,
+--    address VARCHAR(255),
+--    description VARCHAR(255),
+--    PRIMARY KEY (id)
+-- )
+
+-- INSERT INTO houses
+-- (bedrooms, bathrooms, price, address, description)
+-- VALUES
+-- (2, 3, 250000.50, "1234 null island", "");
+
+-- SELECT * FROM houses;
+
+
+
+-- NOTE: Jobs
+-- CREATE TABLE jobs
+-- (
+--    id INT AUTO_INCREMENT,
+--    title VARCHAR(255) NOT NULL,
+--    company VARCHAR(255) NOT NULL,
+--    description VARCHAR(255),
+--    rate INT,
+--    PRIMARY KEY (id)
+-- );
+
+-- INSERT INTO jobs
+-- (title, company, description, rate)
+-- VALUES
+-- ("D-Class Personelle", "Secure Contain Protect foundation", "", 000);
+
+-- SELECT * FROM jobs;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -4,6 +4,10 @@ namespace gregslist_api.Models
 {
    public class HouseListing
    {
+      public HouseListing()
+      {
+      }
+
       public HouseListing(int bedrooms, int bathrooms, int price, string address, string description)
       {
          Bedrooms = bedrooms;
@@ -21,6 +25,6 @@ namespace gregslist_api.Models
       [Required]
       public string Address { get; set; }
       public string Description { get; set; }
-      public string Id { get; private set; } = Guid.NewGuid().ToString();
+      public int Id { get; set; }
    }
 }

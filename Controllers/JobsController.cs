@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using gregslist_api.Models;
-using gregslist_api.db;
+using gregslist_api.Services;
 
 namespace gregslist_api.Controllers
 {
@@ -9,12 +9,32 @@ namespace gregslist_api.Controllers
    [Route("api/[controller]")]
    public class JobsController : ControllerBase
    {
+      private readonly JobsService _service;
+
+      public JobsController(JobsService service)
+      {
+         _service = service;
+      }
+
       [HttpGet]
       public ActionResult<IEnumerable<JobListing>> Get()
       {
          try
          {
-            return Ok(FakeDB.Jobs);
+            return Ok(_service.Get());
+         }
+         catch (System.Exception err)
+         {
+            return BadRequest(err.Message);
+         }
+      }
+
+      [HttpGet("{id}")]
+      public ActionResult<IEnumerable<JobListing>> Get(int id)
+      {
+         try
+         {
+            return Ok(_service.Get(id));
          }
          catch (System.Exception err)
          {
@@ -28,8 +48,7 @@ namespace gregslist_api.Controllers
       {
          try
          {
-            FakeDB.Jobs.Add(newJob);
-            return Ok(newJob);
+            return Ok(_service.Create(newJob));
          }
          catch (System.Exception err)
          {
@@ -37,23 +56,13 @@ namespace gregslist_api.Controllers
          }
       }
 
-      [HttpGet("{jobId}")]
-      public ActionResult<JobListing> GetJob(string jobId)
+      [HttpPut("{id}")]
+      public ActionResult<JobListing> Edit([FromBody] JobListing editedJob, int id)
       {
          try
          {
-            JobListing jobFound = FakeDB.Jobs.Find(c => c.Id == jobId);
-            if (jobFound == null)
-            {
-               throw new System.Exception("Job does not exist");
-            }
-            return Ok(jobFound);
-            //NOTE can use exists to see if a list contains something, but it returns a bool so be cautious when returning.
-            // bool jobFound = FakeDB.Jobs.Exists(c => c.Id == jobId);
-            // if (jobFound == false)
-            // {
-            //   throw new System.Exception("Job does not exist");
-            // }
+            editedJob.Id = id;
+            return Ok(_service.Edit(editedJob));
          }
          catch (System.Exception err)
          {
@@ -62,25 +71,16 @@ namespace gregslist_api.Controllers
       }
 
       [HttpDelete("{id}")]
-      public ActionResult<string> DeleteJob(string id)
+      public ActionResult<int> DeleteJob(int id)
       {
          try
          {
-            JobListing jobToRemove = FakeDB.Jobs.Find(c => c.Id == id);
-            if (FakeDB.Jobs.Remove(jobToRemove))
-            {
-               return Ok("Job Delorted");
-            }
-            else
-            {
-               throw new System.Exception("This job does not exist.");
-            }
+            return Ok(_service.Delete(id));
          }
          catch (System.Exception err)
          {
             return BadRequest(err.Message);
          }
       }
-
    }
 }
